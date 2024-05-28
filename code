@@ -1,0 +1,69 @@
+import time
+from gpiozero import DistanceSensor
+from gpiozero import PWMOutputDevice
+
+sensor1 = DistanceSensor(echo=23, trigger=24)
+
+PWM_FWD_LEFT = 13
+
+PWM_BKD_LEFT = 19
+
+PWM_FWD_RIGHT = 5
+
+PWM_BKD_RIGHT = 6
+
+fwdleft = PWMOutputDevice(PWM_FWD_LEFT, True, 0, 1000)
+
+bkdleft = PWMOutputDevice(PWM_BKD_LEFT, True, 0, 1000)
+
+fwdright = PWMOutputDevice(PWM_FWD_RIGHT, True, 0, 1000)
+
+bkdright = PWMOutputDevice(PWM_BKD_RIGHT, True, 0, 1000)
+
+
+def stop():
+    fwdleft.value = 0
+    bkdleft.value = 0
+    fwdright.value = 0
+    bkdright.value = 0
+
+
+def forward():
+    fwdleft.value = 0.5
+    bkdleft.value = 0
+    fwdright.value = 0.5
+    bkdright.value = 0
+
+
+def reverse():
+    fwdleft.value = 0
+    bkdleft.value = 0.5
+    fwdright.value = 0
+    bkdright.value = 0.5
+
+
+def left():
+    fwdleft.value = 0
+    bkdleft.value = 0.1
+    fwdright.value = 0.5
+    bkdright.value = 0
+
+
+def right():
+    fwdleft.value = 0.5
+    bkdleft.value = 0
+    fwdright.value = 0
+    bkdright.value = 0.1
+
+
+while True:
+    dist = sensor1.distance * 100
+    if dist <= 40:
+        stop()
+        reverse()
+        time.sleep(0.5)
+        right()
+        time.sleep(0.5)
+    else:
+        forward()
+        time.sleep(0.1)
